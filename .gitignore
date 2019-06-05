@@ -49,4 +49,4 @@ Thumbs.db
 /.idea/
 
 # Symbolic linked adapter libraries
-/src-connector/*
+/js/src-connector/*
