@@ -5,14 +5,13 @@ define([], function(PicSureConnector) {
 
     let _PicSureApiVersion = "0.1.0";
     let Connection = class {
-        constructor(url, token) {
-            this.url = url;
-            this.token = token;
-            if (typeof(proxy) === "undefined") {
-                this.proxy = false;
-            } else {
-                this.proxy = proxy
+        constructor(arg_url, arg_token) {
+            let endpoint = String(arg_url).trim();
+            if (endpoint.endsWith("/") === false) {
+                endpoint = endpoint + "/";
             }
+            this.url = endpoint;
+            this.token = arg_token;
         }
         help() {
             console.log(`
@@ -81,14 +80,14 @@ define([], function(PicSureConnector) {
             return (new Promise((resolve, reject) => {
                 jQuery.ajax({
                     method: "GET",
+                    dataType: "text",
                     url: url,
                     beforeSend: (xhr) => {
                         xhr.setRequestHeader("Authorization", "Bearer "+this.token);
                     }
                 }).done((data, textStatus, jqXHR) => {
-                    let ret = JSON.stringify(data);
-                    resolve(ret);
-                    return ret;
+                    resolve(data);
+                    return data;
                 }).fail((jqXHR, textStatus, errorThrown) => {
                     let ret = "[]";
                     reject(ret);
@@ -135,9 +134,9 @@ define([], function(PicSureConnector) {
             // ### https://github.com/hms-dbmi/pic-sure/blob/master/pic-sure-resources/pic-sure-resource-api/src/main/java/edu/harvard/dbmi/avillach/service/ResourceWebClient.java#L69
             const url = this.url + "search/" + String(resource_uuid);
             if (query === false) {
-                const query_data = {"query":""};
+                var query_data = {"query":""};
             } else {
-                const query_data = String(query);
+                var query_data = String(query);
             }
 
             return (new Promise((resolve, reject) => {

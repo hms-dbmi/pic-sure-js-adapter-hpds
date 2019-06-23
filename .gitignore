@@ -50,3 +50,6 @@ Thumbs.db
 
 # Symbolic linked adapter libraries
 /js/src-connector/*
+
+# Merge tool backups
+*.bak
