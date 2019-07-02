@@ -1,10 +1,10 @@
 /**
  * Created by nbeni on 5/17/2019.
  */
-define([], function(PicSureConnector) {
+define([], function() {
 
     let _PicSureApiVersion = "0.1.0";
-    let Connection = class {
+    const Connection = class {
         constructor(arg_url, arg_token) {
             let endpoint = String(arg_url).trim();
             if (endpoint.endsWith("/") === false) {
@@ -13,7 +13,8 @@ define([], function(PicSureConnector) {
             this.url = endpoint;
             this.token = arg_token;
         }
-        help() {
+
+        static help() {
             console.log(`
         [HELP] PicSureClient.connect(url, token)
             .list()                         Prints a list of available resources
@@ -35,6 +36,7 @@ define([], function(PicSureConnector) {
               specifies the adapter's storage format.
             `)
         }
+
         about(resourceId) {
             let url = this.url + "info/";
             if (typeof(resourceId) === "undefined") {
@@ -43,58 +45,65 @@ define([], function(PicSureConnector) {
                 url = url + String(resourceId)
             }
 
-            return (new Promise((resolve, reject) => {
-                jQuery.ajax({
-                    method: "GET",
-                    url: url,
-                    beforeSend: (xhr) => {
-                        xhr.setRequestHeader("Authorization", "Bearer "+this.token);
-                    }
-                }).done((data, textStatus, jqXHR) => {
-                    let ret = {"error":false, "headers":jqXHR.getAllResponseHeaders().split("\n"), "content":data};
-                    resolve(JSON.stringify(ret));
-                    return JSON.stringify(ret);
-                }).fail((jqXHR, textStatus, errorThrown) => {
-                    let ret = {"error":true, "headers":jqXHR.getAllResponseHeaders().split("\n"), "content":errorThrown};
-                    reject(JSON.stringify(ret));
-                    return JSON.stringify(ret);
-                });
-            }));
+            let d = new jQuery.Deferred();
+            jQuery.ajax({
+                method: "GET",
+                url: url,
+                beforeSend: (xhr) => {
+                    xhr.setRequestHeader("Authorization", "Bearer " + this.token);
+                }
+            }).done((data, textStatus, jqXHR) => {
+                let ret = {"error": false, "headers": jqXHR.getAllResponseHeaders().split("\n"), "content": data};
+                d.resolve(JSON.stringify(ret));
+                return JSON.stringify(ret);
+            }).fail((jqXHR, textStatus, errorThrown) => {
+                let ret = {
+                    "error": true,
+                    "headers": jqXHR.getAllResponseHeaders().split("\n"),
+                    "content": errorThrown
+                };
+                d.reject(JSON.stringify(ret));
+                return JSON.stringify(ret);
+            });
+            return d.promise();
         }
+
         async list() {
             let listing = await this.getResources();
             listing = JSON.parse(listing);
-
-            console.group()
-            console.warn("Listing for resources at "+this.url+":");
-            listing.forEach((rec) => {
+            console.group();
+            console.warn("Listing for resources at " + this.url + ":");
+            for (let rec of listing) {
                 console.dirxml(rec);
-            });
+            }
             console.groupEnd();
         }
-        getInfo() {
+
+        static getInfo() {
             return false;
         }
+
         getResources() {
-            let url = this.url + "info/resources"
-            return (new Promise((resolve, reject) => {
-                jQuery.ajax({
-                    method: "GET",
-                    dataType: "text",
-                    url: url,
-                    beforeSend: (xhr) => {
-                        xhr.setRequestHeader("Authorization", "Bearer "+this.token);
-                    }
-                }).done((data, textStatus, jqXHR) => {
-                    resolve(data);
-                    return data;
-                }).fail((jqXHR, textStatus, errorThrown) => {
-                    let ret = "[]";
-                    reject(ret);
-                    return ret;
-                });
-            }));
+            const url = this.url + "info/resources";
+            let d = new jQuery.Deferred();
+            jQuery.ajax({
+                method: "GET",
+                dataType: "text",
+                url: url,
+                beforeSend: (xhr) => {
+                    xhr.setRequestHeader("Authorization", "Bearer " + this.token);
+                }
+            }).done((data, textStatus, jqXHR) => {
+                d.resolve(data);
+                return data;
+            }).fail((jqXHR, textStatus, errorThrown) => {
+                let ret = "[]";
+                d.reject(ret);
+                return ret;
+            });
+            return d.promise();
         }
+
         _api_obj() {
             return new PicSureConnectionAPI(this.url, this.token);
         }
@@ -108,80 +117,82 @@ define([], function(PicSureConnector) {
         }
         info(resource_uuid){
             // ### https://github.com/hms-dbmi/pic-sure/blob/master/pic-sure-resources/pic-sure-resource-api/src/main/java/edu/harvard/dbmi/avillach/service/ResourceWebClient.java#L43
-            const url = this.url + "info/" + String(resource_uuid)
-            return (new Promise((resolve, reject) => {
-                jQuery.ajax({
-                    method: "POST",
-                    contentType: "application/json",
-                    url: url,
-                    data: "{}",
-                    dataType: "text",
-                    beforeSend: (xhr) => {
-                        xhr.setRequestHeader("Authorization", "Bearer "+this.token);
-                    }
-                }).done((data, textStatus, jqXHR) => {
-                    resolve(data);
-                    return data;
-                }).fail((jqXHR, textStatus, errorThrown) => {
-                    let ret = "[]";
-                    reject(ret);
-                    return ret;
-                });
-            }));
+            const url = this.url + "info/" + String(resource_uuid);
+
+            let d = new jQuery.Deferred();
+            jQuery.ajax({
+                method: "POST",
+                contentType: "application/json",
+                url: url,
+                data: "{}",
+                dataType: "text",
+                beforeSend: (xhr) => {
+                    xhr.setRequestHeader("Authorization", "Bearer "+this.token);
+                }
+            }).done((data, textStatus, jqXHR) => {
+                d.resolve(data);
+                return data;
+            }).fail((jqXHR, textStatus, errorThrown) => {
+                let ret = "[]";
+                d.reject(ret);
+                return ret;
+            });
+            return d.promise();
         }
         search(resource_uuid, query = false) {
             // make sure a Resource UUID is passed via the body of these commands
             // ### https://github.com/hms-dbmi/pic-sure/blob/master/pic-sure-resources/pic-sure-resource-api/src/main/java/edu/harvard/dbmi/avillach/service/ResourceWebClient.java#L69
+            let query_data;
             const url = this.url + "search/" + String(resource_uuid);
             if (query === false) {
-                var query_data = {"query":""};
+                query_data = {"query": ""};
             } else {
-                var query_data = String(query);
+                query_data = String(query);
             }
 
-            return (new Promise((resolve, reject) => {
-                jQuery.ajax({
-                    method: "POST",
-                    contentType: "application/json",
-                    url: url,
-                    data: query_data,
-                    dataType: "text",
-                    beforeSend: (xhr) => {
-                        xhr.setRequestHeader("Authorization", "Bearer "+this.token);
-                    }
-                }).done((data, textStatus, jqXHR) => {
-                    resolve(data);
-                    return data;
-                }).fail((jqXHR, textStatus, errorThrown) => {
-                    let ret = '{"results":{}, "error":"true"}';
-                    reject(ret);
-                    return ret;
-                });
-            }));
+            let d = new jQuery.Deferred();
+            jQuery.ajax({
+                method: "POST",
+                contentType: "application/json",
+                url: url,
+                data: query_data,
+                dataType: "text",
+                beforeSend: (xhr) => {
+                    xhr.setRequestHeader("Authorization", "Bearer "+this.token);
+                }
+            }).done((data, textStatus, jqXHR) => {
+                d.resolve(data);
+                return data;
+            }).fail((jqXHR, textStatus, errorThrown) => {
+                let ret = '{"results":{}, "error":"true"}';
+                d.reject(ret);
+                return ret;
+            });
+            return d.promise();
         }
         syncQuery(resource_uuid, query) {
             // make sure a Resource UUID is passed via the body of these commands
             // ### https://github.com/hms-dbmi/pic-sure/blob/master/pic-sure-resources/pic-sure-resource-api/src/main/java/edu/harvard/dbmi/avillach/service/ResourceWebClient.java#L186
             const url = this.url + "query/sync";
-            return (new Promise((resolve, reject) => {
-                jQuery.ajax({
-                    method: "POST",
-                    contentType: "application/json",
-                    url: url,
-                    data: String(query),
-                    dataType: "text",
-                    beforeSend: (xhr) => {
-                        xhr.setRequestHeader("Authorization", "Bearer "+this.token);
-                    }
-                }).done((data, textStatus, jqXHR) => {
-                    resolve(data);
-                    return data;
-                }).fail((jqXHR, textStatus, errorThrown) => {
-                    let ret = '{"results":{}, "error":"true"}';
-                    reject(ret);
-                    return ret;
-                });
-            }));
+            let d = new jQuery.Deferred();
+            jQuery.ajax({
+                method: "POST",
+                contentType: "application/json",
+                url: url,
+                data: String(query),
+                dataType: "text",
+                beforeSend: (xhr) => {
+                    xhr.setRequestHeader("Authorization", "Bearer "+this.token);
+                }
+            }).done((data, textStatus, jqXHR) => {
+                d.resolve(data);
+                return data;
+            }).fail((jqXHR, textStatus, errorThrown) => {
+                let ret = '{"results":{}, "error":"true"}';
+                d.reject(ret);
+                return ret;
+            });
+            return d.promise();
         }
         asyncQuery(resource_uuid, query) {
             // make sure a Resource UUID is passed via the body of these commands

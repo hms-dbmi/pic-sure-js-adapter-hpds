@@ -74,10 +74,11 @@ define(["./PicSureHpdsDictionary", "./PicSureHpdsQuery"], function(PicSureHpdsDi
         }
         // -------------------------------
         useResource(resource_uuid = null) {
+            let temp;
             if (resource_uuid === null) {
-                let temp  = new PicSureHpdsResourceConnection(this.connection_reference, false);
+                temp = new PicSureHpdsResourceConnection(this.connection_reference, false);
             } else {
-                let temp  = new PicSureHpdsResourceConnection(this.connection_reference, resource_uuid);
+                temp  = new PicSureHpdsResourceConnection(this.connection_reference, resource_uuid);
             }
             return temp;
         }
@@ -109,9 +110,7 @@ define(["./PicSureHpdsDictionary", "./PicSureHpdsQuery"], function(PicSureHpdsDi
             this.getResources().done((data) => {
                 console.group();
                 console.warn("Listing for resources at "+this.url+":");
-                data.forEach((rec) => {
-                    console.dirxml(rec);
-                });
+                for (let rec of data) console.dirxml(rec);
                 console.groupEnd();
             }).fail(()=>{
                 console.error("Failed to get list of resources");
@@ -166,7 +165,7 @@ define(["./PicSureHpdsDictionary", "./PicSureHpdsQuery"], function(PicSureHpdsDi
         // -------------------------------
         info(resource_uuid){
             // ### https://github.com/hms-dbmi/pic-sure/blob/master/pic-sure-resources/pic-sure-resource-api/src/main/java/edu/harvard/dbmi/avillach/service/ResourceWebClient.java#L43
-            const url = this.url + "info/" + String(resource_uuid)
+            const url = this.url + "info/" + String(resource_uuid);
             return (new Promise((resolve, reject) => {
                 jQuery.ajax({
                     method: "POST",
@@ -191,11 +190,12 @@ define(["./PicSureHpdsDictionary", "./PicSureHpdsQuery"], function(PicSureHpdsDi
         search(resource_uuid, query = false) {
             // make sure a Resource UUID is passed via the body of these commands
             // ### https://github.com/hms-dbmi/pic-sure/blob/master/pic-sure-resources/pic-sure-resource-api/src/main/java/edu/harvard/dbmi/avillach/service/ResourceWebClient.java#L69
+            let query_data;
             const url = this.url + "search/" + String(resource_uuid);
             if (query === false) {
-                var query_data = {"query":""};
+                query_data = {"query": ""};
             } else {
-                var query_data = String(query);
+                query_data = String(query);
             }
 
             return (new Promise((resolve, reject) => {

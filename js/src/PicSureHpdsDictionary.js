@@ -41,11 +41,12 @@ define([], function() {
     const PicSureHpdsDictionaryResult = class {
         // -------------------------------
         constructor(json_data = null) {
+            let newResults;
             this.results = JSON.parse(json_data);
             if (typeof(this.results.results["phenotypes"]) !== 'undefined') {
-                newResults = {}
-                for (resultType in this.results.results) {
-                    for (idx in this.results.results[resultType]) {
+                newResults = {};
+                for (let resultType in this.results.results) {
+                    for (let idx in this.results.results[resultType]) {
                         this.results.results[resultType][idx]['HpdsDataType'] = resultType;
                         newResults[idx] = this.results.results[resultType][idx];
                     }
