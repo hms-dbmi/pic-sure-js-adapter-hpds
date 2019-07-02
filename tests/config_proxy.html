@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Test PIC-SURE Connection</title>
+    <script type="text/javascript" src="jquery.min.js"></script>
+    <script type="text/javascript" src="require.js"></script>
+    <script type="text/javascript" src="PIC-SURE_Connector.js"></script>
+    <style>
+        input { width:100%}
+        ul { list-style-type:none; width:400px; }
+        li.last_row div {
+            margin: 8px;
+            float: left;
+        }
+    </style>
+</head>
+<body>
+<form>
+    <ul>
+        <li>
+            <div>PIC-SURE End-point</div>
+            <input id="endpoint" placeholder="http://localhost:8080/PIC-SURE/">
+        </li>
+        <li>
+            <div>PIC-SURE Security Token</div>
+            <input id="token">
+        </li>
+        <li class="last_row">
+            <div><button id="btnSetup">Save</button></div>
+            <div id="status"></div>
+        </li>
+    </ul>
+
+</form>
+<script>
+    jQuery(document).ready(function() {
+        // load the current configuration into the UI
+        jQuery.get("/.well-known/PIC-SURE/proxy_API/config", function(results) {
+            if (typeof(results.endpoint) !== 'undefined') {
+                if (results.endpoint !== false) {
+                    jQuery("#endpoint").val(results.endpoint)
+                } else {
+                    jQuery("#endpoint").val("")
+                }
+            }
+            if (typeof(results.token) !== 'undefined') {
+                if (results.token !== false) {
+                    jQuery("#token").val(results.token)
+                } else {
+                    jQuery("#token").val("")
+                }
+            }
+        });
+
+        // click handler
+        jQuery("#btnSetup").on('click', function(e) {
+            if (jQuery("#endpoint").val().length == 0 || jQuery("#token").val().length == 0) {
+                alert('Be sure to enter a value for endpoint and your security token')
+                return false;
+            } else {
+                config = {};
+                config['endpoint'] = jQuery("#endpoint").val();
+                config['token'] = jQuery("#token").val();
+
+                jQuery.post("/.well-known/PIC-SURE/proxy_API/config", JSON.stringify(config));
+
+                jQuery("#status").text("Saved!")
+                setTimeout('jQuery("#status").text("")', 5000)
+            }
+            e.stopImmediatePropagation();
+            e.preventDefault();
+            return false;
+        });
+    })
+</script>
+</body>
+</html>

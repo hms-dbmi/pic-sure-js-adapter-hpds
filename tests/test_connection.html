@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Test PIC-SURE Connection</title>
+    <script type="text/javascript" src="jquery.js"></script>
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/SyntaxHighlighter/3.0.83/scripts/shCore.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/SyntaxHighlighter/3.0.83/scripts/shBrushJScript.js"></script>
+    <link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/SyntaxHighlighter/3.0.83/styles/shCore.css" />
+    <link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/SyntaxHighlighter/3.0.83/styles/shCoreDefault.css" />
+    <link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/SyntaxHighlighter/3.0.83/styles/shThemeDefault.css" />
+    <style>
+        input { width:100%}
+        ul { list-style-type:none; width:400px; }
+    </style>
+
+    <script type="text/javascript" src="require.js"></script>
+</head>
+<body>
+    <form>
+        <ul>
+            <li>
+                <div>PIC-SURE End-point</div>
+                <input id="endpoint" placeholder="http://localhost:8080/PIC-SURE/" disabled>
+            </li>
+            <li>
+                <div>PIC-SURE Security Token</div>
+                <input id="token" disabled>
+            </li>
+        </ul>
+
+    </form>
+    <script type="syntaxhighlighter" class="brush: js"><![CDATA[
+        temp_PicSure_Endpoint = "<already set in the console>";
+        temp_PicSure_Token = "<already set in the console>";
+
+        // load the libraries
+        requirejs(['PIC-SURE_Connector', 'PIC-SURE_HPDS_Adapter']);
+
+        // create and configure a connection instance
+        PicSureClient = require('PIC-SURE_Connector');
+        connection = PicSureClient.connect("http://localhost:8686/~proxy", temp_PicSure_Token);
+        connection.list();
+
+        // create and configure a HPDS adapter instance
+        HpdsAdapter = requirejs('PIC-SURE_HPDS_Adapter');
+        adapter = HpdsAdapter.Adapter(connection);
+        adapter.help();
+
+        // get a configured connection to the first found resource
+        var resource = false;
+        connection.getResources().then((resources) => {
+            uuid = JSON.parse(resources)[0].uuid;
+            resource = adapter.useResource(uuid);
+        });
+
+        resource.help();
+
+        // get dictionary and query references for the resource
+        // found in the previous step
+        d = resource.dictionary();
+        q = resource.query();
+
+        // get a list of results from the dictionary
+        let dict_results = null;
+        d.find("asthma")
+            .then((ret) => {
+                dict_results = ret;
+            })
+
+        dict_results.help();
+        console.dir(dict_results.count());
+        console.dir(dict_results.keys());
+        console.dir(dict_results.entries());
+
+        // add the results to the query's require field
+        q.require().add(dict_results.keys());
+        // show the query as it currently is
+        q.show();
+
+        // get the number of matching records
+        q.getCount().then((cnt) => {
+            console.log(cnt);
+        });
+
+        // add filter to a specific category value
+        q.filter().add("\\questionnaire\\disease\\Ever asthma?\\", {"category": ["Yes"]});
+        q.getCount().then((cnt) => {
+            console.log(cnt);
+        });
+
+        // add filter to a specific category value
+        q.filter().add("\\questionnaire\\disease\\Current asthma?\\", {"category": "Yes"});
+        q.getCount().then((cnt) => {
+            console.log(cnt);
+        });
+
+        q.filter().add("\\questionnaire\\supplement use\\VITAMIN_C_mg\\", {min:5000});
+        q.getCount().then((cnt) => {
+            console.log(cnt);
+        });
+
+        q.filter().delete("\\questionnaire\\disease\\Ever asthma?\\");
+        q.filter().delete("\\questionnaire\\disease\\Current asthma?\\");
+        q.show();
+        q.getCount().then((csv_data) => {
+            console.log(csv_data);
+        });
+
+
+    ]]></script>
+
+    <script type="text/javascript">
+        require(['PIC-SURE_Connector']);
+
+        jQuery(document).ready(function() {
+            console.warn("execute");
+            SyntaxHighlighter.all();
+        });
+        jQuery.get("/.well-known/PIC-SURE/proxy_API/config", function(results) {
+            // load the configuration info into local variables
+            temp_PicSure_Endpoint = results.endpoint;
+            temp_PicSure_Token = results.token;
+            jQuery("#endpoint")
+                .attr("readonly",true)
+                .val(temp_PicSure_Endpoint);
+            jQuery("#token")
+                .attr("readonly",true)
+                .val(temp_PicSure_Token);
+        })
+    </script>
+</body>
+</html>
