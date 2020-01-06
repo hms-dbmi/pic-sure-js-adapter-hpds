@@ -862,7 +862,7 @@ var dfjs = (function (exports) {
 
 	var nativeExec = RegExp.prototype.exec;
 	// This always refers to the native implementation, because the
-	// String#replace polyfill uses ./fix-regexp-well-known-symbol-logic.js,
+	// String#replace polyfill uses ./fix-regexp-well-known-symbol-logic.Adapters,
 	// which loads this file before patching the method.
 	var nativeReplace = String.prototype.replace;
 
@@ -2681,7 +2681,7 @@ var dfjs = (function (exports) {
 	var listener = function (event) {
 	  run.call(event.data);
 	};
-	// Node.js 0.9+ & IE10+ has setImmediate, otherwise:
+	// Node.Adapters 0.9+ & IE10+ has setImmediate, otherwise:
 	if (!setTask || !clearTask) {
 	  setTask = function setImmediate(fn) {
 	    var args = [];
@@ -2697,7 +2697,7 @@ var dfjs = (function (exports) {
 	  clearTask = function clearImmediate(id) {
 	    delete queue[id];
 	  };
-	  // Node.js 0.8-
+	  // Node.Adapters 0.8-
 	  if (_cof(process) == 'process') {
 	    defer = function (id) {
 	      process.nextTick(_ctx(run, id, 1));
@@ -2766,7 +2766,7 @@ var dfjs = (function (exports) {
 	    if (parent) parent.enter();
 	  };
 
-	  // Node.js
+	  // Node.Adapters
 	  if (isNode) {
 	    notify = function () {
 	      process$1.nextTick(flush);
@@ -4490,7 +4490,7 @@ var dfjs = (function (exports) {
 
 	var __values__ = Symbol("values");
 	/**
-	 * Row data structure used into the dataframe-js.
+	 * Row data structure used into the dataframe-Adapters.
 	 */
 
 
@@ -5172,7 +5172,7 @@ var dfjs = (function (exports) {
 	     * DataFrame.fromDSV('http://myurl/myfile.txt').then(df => df.show())
 	     * // In browser Only
 	     * DataFrame.fromDSV(myFile).then(df => df.show())
-	     * // From node.js only Only
+	     * // From node.Adapters only Only
 	     * DataFrame.fromDSV('/my/absolue/path/myfile.txt').then(df => df.show())
 	     * DataFrame.fromDSV('/my/absolue/path/myfile.txt', ';', true).then(df => df.show())
 	     */
@@ -5208,7 +5208,7 @@ var dfjs = (function (exports) {
 	     * DataFrame.fromText('http://myurl/myfile.txt').then(df => df.show())
 	     * // In browser Only
 	     * DataFrame.fromText(myFile).then(df => df.show())
-	     * // From node.js only Only
+	     * // From node.Adapters only Only
 	     * DataFrame.fromText('/my/absolue/path/myfile.txt').then(df => df.show())
 	     * DataFrame.fromText('/my/absolue/path/myfile.txt', ';', true).then(df => df.show())
 	     */
@@ -5228,7 +5228,7 @@ var dfjs = (function (exports) {
 	     * DataFrame.fromCSV('http://myurl/myfile.csv').then(df => df.show())
 	     * // For browser only
 	     * DataFrame.fromCSV(myFile).then(df => df.show())
-	     * // From node.js only
+	     * // From node.Adapters only
 	     * DataFrame.fromCSV('/my/absolue/path/myfile.csv').then(df => df.show())
 	     * DataFrame.fromCSV('/my/absolue/path/myfile.csv', true).then(df => df.show())
 	     */
@@ -5247,7 +5247,7 @@ var dfjs = (function (exports) {
 	     * DataFrame.fromTSV('http://myurl/myfile.tsv').then(df => df.show())
 	     * // For browser only
 	     * DataFrame.fromTSV(myFile).then(df => df.show())
-	     * // From node.js only
+	     * // From node.Adapters only
 	     * DataFrame.fromTSV('/my/absolue/path/myfile.tsv').then(df => df.show())
 	     * DataFrame.fromTSV('/my/absolue/path/myfile.tsv', true).then(df => df.show())
 	     */
@@ -5266,7 +5266,7 @@ var dfjs = (function (exports) {
 	     * DataFrame.fromPSV('http://myurl/myfile.psv').then(df => df.show())
 	     * // For browser only
 	     * DataFrame.fromPSV(myFile).then(df => df.show())
-	     * // From node.js only
+	     * // From node.Adapters only
 	     * DataFrame.fromPSV('/my/absolue/path/myfile.psv').then(df => df.show())
 	     * DataFrame.fromPSV('/my/absolue/path/myfile.psv', true).then(df => df.show())
 	     */
@@ -5284,7 +5284,7 @@ var dfjs = (function (exports) {
 	     * DataFrame.fromJSON('http://myurl/myfile.json').then(df => df.show())
 	     * // For browser only
 	     * DataFrame.fromJSON(myFile).then(df => df.show())
-	     * // From node.js only
+	     * // From node.Adapters only
 	     * DataFrame.fromJSON('/my/absolute/path/myfile.json').then(df => df.show())
 	     */
 
@@ -5622,13 +5622,13 @@ var dfjs = (function (exports) {
 	     You can also save the file if you are using nodejs.
 	     * @param {String} [sep=' '] Column separator.
 	     * @param {Boolean} [header=true] Writing the header in the first line. If false, there will be no header.
-	     * @param {String} [path] The path to save the file. /!\ Works only on node.js, not into the browser.
+	     * @param {String} [path] The path to save the file. /!\ Works only on node.Adapters, not into the browser.
 	     * @returns {String} The text file in raw string.
 	     * @example
 	     * df.toDSV()
 	     * df.toDSV(';')
 	     * df.toDSV(';', true)
-	     * // From node.js only
+	     * // From node.Adapters only
 	     * df.toDSV(';', true, '/my/absolute/path/dataframe.txt')
 	     */
 
@@ -5652,13 +5652,13 @@ var dfjs = (function (exports) {
 	     You can also save the file if you are using nodejs.
 	     * @param {String} [sep=' '] Column separator.
 	     * @param {Boolean} [header=true] Writing the header in the first line. If false, there will be no header.
-	     * @param {String} [path] The path to save the file. /!\ Works only on node.js, not into the browser.
+	     * @param {String} [path] The path to save the file. /!\ Works only on node.Adapters, not into the browser.
 	     * @returns {String} The text file in raw string.
 	     * @example
 	     * df.toText()
 	     * df.toText(';')
 	     * df.toText(';', true)
-	     * // From node.js only
+	     * // From node.Adapters only
 	     * df.toText(';', true, '/my/absolute/path/dataframe.txt')
 	     */
 
@@ -5674,12 +5674,12 @@ var dfjs = (function (exports) {
 	     * Convert the DataFrame into a comma separated values string.
 	     You can also save the file if you are using nodejs.
 	     * @param {Boolean} [header=true] Writing the header in the first line. If false, there will be no header.
-	     * @param {String} [path] The path to save the file. /!\ Works only on node.js, not into the browser.
+	     * @param {String} [path] The path to save the file. /!\ Works only on node.Adapters, not into the browser.
 	     * @returns {String} The csv file in raw string.
 	     * @example
 	     * df.toCSV()
 	     * df.toCSV(true)
-	     * // From node.js only
+	     * // From node.Adapters only
 	     * df.toCSV(true, '/my/absolute/path/dataframe.csv')
 	     */
 
@@ -5694,12 +5694,12 @@ var dfjs = (function (exports) {
 	     * Convert the DataFrame into a tab separated values string.
 	     You can also save the file if you are using nodejs.
 	     * @param {Boolean} [header=true] Writing the header in the first line. If false, there will be no header.
-	     * @param {String} [path] The path to save the file. /!\ Works only on node.js, not into the browser.
+	     * @param {String} [path] The path to save the file. /!\ Works only on node.Adapters, not into the browser.
 	     * @returns {String} The csv file in raw string.
 	     * @example
 	     * df.toCSV()
 	     * df.toCSV(true)
-	     * // From node.js only
+	     * // From node.Adapters only
 	     * df.toCSV(true, '/my/absolute/path/dataframe.csv')
 	     */
 
@@ -5714,12 +5714,12 @@ var dfjs = (function (exports) {
 	     * Convert the DataFrame into a pipe separated values string.
 	     You can also save the file if you are using nodejs.
 	     * @param {Boolean} [header=true] Writing the header in the first line. If false, there will be no header.
-	     * @param {String} [path] The path to save the file. /!\ Works only on node.js, not into the browser.
+	     * @param {String} [path] The path to save the file. /!\ Works only on node.Adapters, not into the browser.
 	     * @returns {String} The csv file in raw string.
 	     * @example
 	     * df.toPSV()
 	     * df.toPSV(true)
-	     * // From node.js only
+	     * // From node.Adapters only
 	     * df.toPSV(true, '/my/absolute/path/dataframe.csv')
 	     */
 
@@ -5733,11 +5733,11 @@ var dfjs = (function (exports) {
 	    /**
 	     * Convert the DataFrame into a json string. You can also save the file if you are using nodejs.
 	     * @param {Boolean} [asCollection=true] Writing the JSON as collection of Object.
-	     * @param {String} [path] The path to save the file. /!\ Works only on node.js, not into the browser.
+	     * @param {String} [path] The path to save the file. /!\ Works only on node.Adapters, not into the browser.
 	     * @returns {String} The json file in raw string.
 	     * @example
 	     * df.toJSON()
-	     * // From node.js only
+	     * // From node.Adapters only
 	     * df.toJSON('/my/absolute/path/dataframe.json')
 	     */
 

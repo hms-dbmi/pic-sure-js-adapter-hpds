@@ -44,12 +44,15 @@ Thumbs.db
 *.komodoproject
 
 # Folders to ignore
-/js/coverage/
+/src/coverage/
 /node_modules/
 /.idea/
+/dist/
 
 # Symbolic linked adapter libraries
-/js/src-connector/*
+/src/Connector/*
+/src/Adapters/*
+!/src/Adapters/HPDS
 
 # Merge tool backups
 *.bak

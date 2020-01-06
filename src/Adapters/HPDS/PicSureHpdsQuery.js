@@ -1,4 +1,5 @@
-define(['d3-dsv', 'dataframe'], function(d3dsv, dfjs) {
+define([], function() {
+//define(['d3-dsv', 'dataframe'], function(d3dsv, dfjs) {
 
 //    dfjs = requirejs('dataframe');
 

@@ -68,7 +68,7 @@ define([], function() {
         }
         // -------------------------------
         DataFrame() {
-            console.warn("Not Yet Implemented: https://github.com/Gmousse/dataframe-js");
+            console.warn("Not Yet Implemented: https://github.com/Gmousse/dataframe-Adapters");
             return this.results.results;
         }
         // -------------------------------

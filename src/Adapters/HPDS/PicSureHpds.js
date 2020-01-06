@@ -8,26 +8,12 @@ define(["./PicSureHpdsDictionary", "./PicSureHpdsQuery"], function(PicSureHpdsDi
             this.connection_reference = PicSureConnector;
         }
         // -------------------------------
-        list() {
-            this.connection_reference.list()
-        }
-        // -------------------------------
         useResource(resource_uuid) {
             return (new PicSureHpdsResourceConnection(this.connection_reference, resource_uuid))
         }
         // -------------------------------
         version() {
             console.log("PIC-SURE HPDS Adapter Library ( version " + _library_version + " )");
-        }
-        // -------------------------------
-        help() {
-            console.group();
-            console.log(`
-[HELP] PicSureHpdsLib.Adapter(picsure_connection)
-    .version()                      gives version information for library
-    .list()                         lists available resources
-    .useResource(resource_uuid)     returns an object for selected resource`);
-            console.groupEnd();
         }
     };
 
@@ -45,18 +31,6 @@ define(["./PicSureHpdsDictionary", "./PicSureHpdsQuery"], function(PicSureHpdsDi
         // -------------------------------
         query() {
             return (new PicSureHpdsQuery(this));
-        }
-        // -------------------------------
-        help() {
-            console.group();
-            console.log(`
-[HELP] PicSureHpdsLib.Adapter.useResource(resource_uuid)
-    .dictionary()       Used to access data dictionary of the resource
-    .query()            Used to query against data in the resource`
-                + "\n\n[ENVIRONMENT]"
-                + "\n              URL: " + this.connection_reference.url
-                + "\n    Resource UUID: " + this.resource_uuid);
-            console.groupEnd();
         }
     };
 
@@ -81,10 +55,6 @@ define(["./PicSureHpdsDictionary", "./PicSureHpdsQuery"], function(PicSureHpdsDi
                 temp  = new PicSureHpdsResourceConnection(this.connection_reference, resource_uuid);
             }
             return temp;
-        }
-        // -------------------------------
-        list() {
-            this.connection_reference.list();
         }
         // -------------------------------
         help() {

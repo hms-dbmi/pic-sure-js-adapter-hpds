@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Test PIC-SURE Connection</title>
+    <script type="text/javascript" src="jquery.js"></script>
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/SyntaxHighlighter/3.0.83/scripts/shCore.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/SyntaxHighlighter/3.0.83/scripts/shBrushJScript.js"></script>
+    <link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/SyntaxHighlighter/3.0.83/styles/shCore.css" />
+    <link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/SyntaxHighlighter/3.0.83/styles/shCoreDefault.css" />
+    <link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/SyntaxHighlighter/3.0.83/styles/shThemeDefault.css" />
+    <style>
+        input { width:100%}
+        ul { list-style-type:none; width:400px; }
+    </style>
+
+    <script type="text/javascript" src="require.js"></script>
+</head>
+<body>
+<form>
+    <ul>
+        <li>
+            <div>PIC-SURE End-point</div>
+            <input id="endpoint" placeholder="http://localhost:8080/PIC-SURE/" disabled>
+        </li>
+        <li>
+            <div>PIC-SURE Security Token</div>
+            <input id="token" disabled>
+        </li>
+    </ul>
+
+</form>
+<script type="text/javascript">
+    require(['dataframe']);
+</script>
+</body>
+</html>
